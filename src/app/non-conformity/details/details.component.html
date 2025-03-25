@@ -1,0 +1,157 @@
+<form [formGroup]="detailsForm">
+  <!-- Première partie -->
+  <div *ngIf="!showSecondPart">
+    <div class="form-container">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Nature</label>
+          <input type="text" class="form-control" formControlName="nature" readonly>
+        </div>
+    
+        <div class="form-group">
+          <label class="custom-label">Source</label>
+          <input type="text" class="form-control" formControlName="source">
+        </div>
+      </div>
+    
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Processus</label>
+          <select class="form-control custom-select" formControlName="processus">
+            <option *ngFor="let p of processusList" [value]="p.id">{{ p.designation }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Service Responsable</label>
+          <select class="form-control custom-select" formControlName="service">
+            <option *ngFor="let s of servicesList" [value]="s.id">{{ s.designation }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group wide-textarea">
+          <label class="custom-label">Intitulé <span class="required-star">*</span></label>
+          <textarea class="form-control" formControlName="intitule" required placeholder="Write here.."></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Description</label>
+          <dx-html-editor formControlName="description"
+            height="200px" 
+            [toolbar]="{ items: ['bold', 'italic', 'underline', 'strike', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'orderedList', 'bulletList', 'link'] }">
+          </dx-html-editor>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Exigences</label>
+          <dx-html-editor formControlName="exigences"
+            height="200px" 
+            [toolbar]="{ items: ['bold', 'italic', 'underline', 'strike', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'orderedList', 'bulletList', 'link'] }">
+          </dx-html-editor>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group checkbox-container">
+          <label class="custom-label">Système</label>
+          <div class="checkbox-group">
+            <input type="checkbox" formControlName="q" id="q"> <label for="q" class="checkbox-label blue">Q</label>
+            <input type="checkbox" formControlName="s" id="s"> <label for="s" class="checkbox-label red">S</label>
+            <input type="checkbox" formControlName="e" id="e"> <label for="e" class="checkbox-label green">E</label>
+            <input type="checkbox" formControlName="sda" id="sda"> <label for="sda" class="checkbox-label purple">SDA</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <ion-row>
+      <ion-col class="ion-text-end">
+        <ion-button color="primary" (click)="next()">Next</ion-button>
+      </ion-col>
+    </ion-row>
+    
+
+  </div>
+
+  <!-- Deuxième partie -->
+  <div *ngIf="showSecondPart">
+    <div class="form-container">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Détectée le <span class="required-star">*</span></label>
+          <input type="date" class="form-control" formControlName="detectionDate" required>
+        </div>
+
+        <div class="form-group">
+          <label class="custom-label">Types Non-Conformité <span class="required-star">*</span></label>
+          <select class="form-control custom-select" formControlName="type">
+            <option *ngFor="let t of nonConformityTypes" [value]="t.id">{{ t.designation }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Catégorie NC</label>
+          <select class="form-control custom-select" formControlName="categorie">
+            <option *ngFor="let c of nonConformityCategories" [value]="c.id">{{ c.designation }}</option>
+          </select>
+        </div>
+    
+        <div class="form-group">
+          <label class="custom-label">Priorités</label>
+          <select class="form-control custom-select" formControlName="priorite">
+            <option *ngFor="let p of commonPriorities" [value]="p.id">{{ p.designation }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Intensité</label>
+          <select class="form-control custom-select" formControlName="intensite">
+            <option *ngFor="let i of intensities" [value]="i.id">{{ i.designation }}</option>
+          </select>
+        </div>
+    
+        <div class="form-group">
+          <label class="custom-label">Fréquence</label>
+          <select class="form-control custom-select" formControlName="frequence">
+            <option *ngFor="let f of frequencies" [value]="f.id">{{ f.designation }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="custom-label">Gravité</label>
+          <select class="form-control custom-select" formControlName="gravite">
+            <option *ngFor="let g of gravities" [value]="g.id">{{ g.designation }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group wide-textarea">
+          <label class="custom-label">Risques associés</label>
+          <textarea class="form-control" formControlName="risques"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group wide-textarea">
+          <label class="custom-label">Opportunités associées</label>
+          <textarea class="form-control" formControlName="opportunites"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

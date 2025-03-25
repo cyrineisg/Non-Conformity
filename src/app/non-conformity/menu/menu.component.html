@@ -1,0 +1,33 @@
+<ion-page>
+  <ion-segment (ionChange)="changeTab($event)">
+    <ion-segment-button value="details">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <ion-label>Détails</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="participants">
+      <ion-icon name="people-outline"></ion-icon>
+      <ion-label>Participants</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="actions">
+      <ion-icon name="construct-outline"></ion-icon>
+      <ion-label>Actions</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="causes">
+      <ion-icon name="help-circle-outline"></ion-icon>
+      <ion-label>Causes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="media">
+      <ion-icon name="images-outline"></ion-icon>
+      <ion-label>Médias</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Zone d'affichage des composants -->
+  <div [ngSwitch]="currentTab">
+    <app-details *ngSwitchCase="'details'"></app-details>
+    <app-participants *ngSwitchCase="'participants'"></app-participants>
+    <app-actions *ngSwitchCase="'actions'"></app-actions>
+    <app-causes *ngSwitchCase="'causes'"></app-causes>
+    <app-media *ngSwitchCase="'media'"></app-media>
+  </div>
+</ion-page>
