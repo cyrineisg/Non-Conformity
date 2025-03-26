@@ -18,6 +18,7 @@ export class ParticipantsComponent  implements OnInit {
   searchQuery: string = ''; 
   filteredParticipants: any[] = [];
   selectedParticipants: any[] = []; // Liste des participants sélectionnés
+  
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {

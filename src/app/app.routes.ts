@@ -22,12 +22,16 @@ export const routes: Routes = [
     loadComponent: () =>import('./non-conformity/menu/menu.component').then(m =>m.MenuPage),
   },
   {
+    path: 'details',
+    loadComponent: () =>import('./non-conformity/details/details.component').then(m =>m.DetailsComponent ),
+  },
+  {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'ncList',
     pathMatch: 'full',
   },
   {
     path: '**', // Handle unknown routes
-    redirectTo: 'home',
+    redirectTo: 'ncList',
   },
 ];

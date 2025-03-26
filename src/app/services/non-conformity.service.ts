@@ -54,8 +54,33 @@ export class NonConformityService {
   getQualityControle(): Observable<any> { return this.fetchData('api/QualityControls'); }
   getCustomerComplaints(): Observable<any> { return this.fetchData('api/CustomerComplaints'); } 
   getNCById(NCId: string): Observable<NonConformity> { return this.fetchData(`api/NonConformities/${NCId}`);}
+  
+  
+  //get link data by id
+  getAuditById(auditId: string): Observable<any> { return this.fetchData(`api/audits/${auditId}`);}
+  getCCById(ccId: string): Observable<any> { return this.fetchData(`api/CustomerComplaints/${ccId}`);}
+  getQCById(qcId: string): Observable<any> { return this.fetchData(`api/QualityControls/${qcId}`);}
+
   // Initialisation de l'audit
   initNonConformity(): Observable<NonConformity> { return this.fetchData('api/NonConformities/init');}
+  
+  //updating non conformity
+  updateNonConformity(): Observable<NonConformity> {    
+    if (!this.non_conformity || !this.non_conformity.id) {
+      console.error("L'ID de la non-conformité est manquant !");
+      throw new Error("L'ID de la non-conformité est requis pour la mise à jour.");
+    }
+  
+    return this.getHeaders().pipe(
+      switchMap(headers => 
+        this.http.put<NonConformity>(
+          `${this.baseUrl}/api/NonConformities/${this.non_conformity.id}`, 
+          this.non_conformity, 
+          { headers }
+        )
+      )
+    );
+  }
   
 
   // non conformity creation

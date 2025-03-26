@@ -6,6 +6,7 @@ import { NonConformityService } from '../services/non-conformity.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
+import { NonConformity } from '../models/non-conformity';
 
 @Component({
   selector: 'app-nc-list',
@@ -19,6 +20,8 @@ export class NCListComponent  implements OnInit, AfterViewInit {
   filteredNCList: any[] = [];  // List to hold filtered NC
   searchQuery: string = '';  // Holds the search query
   isAuthenticated = false;
+  isViewModalOpen: boolean = false;
+  selectedNc: NonConformity | null = null;
 
   constructor(
     private authService: AuthService,
@@ -144,8 +147,13 @@ export class NCListComponent  implements OnInit, AfterViewInit {
 
   // Fonction pour rediriger vers la page de création de non-conformité
   goToCreationNonConformity(type: string) {
-    this.router.navigate(['/creation-non-conformity'], { queryParams: { type } });
+    this.nonConformityService.non_conformity.nonConformityNatureStr = type;
+    this.router.navigate(['/creation-non-conformity']);
   }
   
+  openNcDetails(nc: NonConformity) {
+    this.selectedNc = nc;
+    this.isViewModalOpen = true; // Open the modal
+  }
 
 }

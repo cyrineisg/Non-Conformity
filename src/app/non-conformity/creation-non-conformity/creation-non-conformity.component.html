@@ -5,26 +5,26 @@
   [width]="800"
   [height]="600"
   [dragEnabled]="true"
-  [closeOnOutsideClick]="true"
+  [hideOnOutsideClick]="true"
   (onHiding)="closePopup()">
   
   <div class="popup-content">
     <!-- Type de lien -->
     <div class="form-field">
       <label for="typeLien">Type de lien</label>
-      <input type="text" id="typeLien" [value]="typeLien" disabled />
+      <input type="text" id="typeLien" [(ngModel)]="typeLien" disabled />
     </div>
 
     <!-- Source -->
     <div class="form-field">
       <label for="source">Source</label>
-      <select id="source" [(ngModel)]="source">
+      <select id="source" [(ngModel)]="ncSource">
         <option *ngFor="let option of sourceOptions" [value]="option">{{ option }}</option>
       </select>
     </div>
 
     <!-- Tableau des données -->
-  <div *ngIf="displayedData.length> 0" class="table">
+    <div *ngIf="displayedData.length> 0" class="table">
     <h3>Liée avec : {{ source }}</h3>  
     <dx-data-grid
       [dataSource]="displayedData"
@@ -47,6 +47,7 @@
 
       <!-- Colonnes pour les audits -->
       <ng-container *ngIf="source !== 'Contrôles Qualités' && source !== 'Réclamations Clients'">
+        <dxi-column dataField="id" caption="id" allowReordering="true" [ngModel]="selectRecordId"></dxi-column>
         <dxi-column dataField="year" caption="Année" allowReordering="true"></dxi-column>
         <dxi-column dataField="auditNatureStr" caption="Nature Audit" allowReordering="true"></dxi-column>
         <dxi-column dataField="reference" caption="Référence" allowReordering="true"></dxi-column>
@@ -57,6 +58,7 @@
 
       <!-- Colonnes pour les contrôles qualités -->
       <ng-container *ngIf="source === 'Contrôles Qualités'">
+        <dxi-column dataField="id" caption="id" allowReordering="true" [ngModel]="selectRecordId"></dxi-column>
         <dxi-column dataField="year" caption="Année" allowReordering="true"></dxi-column>
         <dxi-column dataField="reference" caption="Référence" allowReordering="true"></dxi-column>
         <dxi-column dataField="internalReference" caption="Référence Interne QC" allowReordering="true"></dxi-column>
@@ -67,6 +69,7 @@
 
       <!-- Colonnes pour les réclamations clients -->
       <ng-container *ngIf="source === 'Réclamations Clients'">
+        <dxi-column dataField="id" caption="id" allowReordering="true" [ngModel]="selectRecordId"></dxi-column>
         <dxi-column dataField="year" caption="Année" allowReordering="true"></dxi-column>
         <dxi-column dataField="reference" caption="Référence" allowReordering="true"></dxi-column>
         <dxi-column dataField="customerDesignation" caption="Client" allowReordering="true"></dxi-column>
@@ -78,24 +81,25 @@
         <dxi-column dataField="date" caption="Date" dataType="date" format="dd/MM/yyyy" allowReordering="true"></dxi-column>
       </ng-container>
     </dx-data-grid>
-  </div>
+    </div>
 
 
     <!-- Intitulé de la non-conformité -->
     <div class="form-field">
       <label for="intitule">Intitulé de la non-conformité</label>
-      <input type="text" id="intitule" [(ngModel)]="intitule" />
+      <input type="text" id="intitule" [(ngModel)]="nonConformityService.non_conformity.designation" />
     </div>
 
     <!-- Commentaires du lien -->
     <div class="form-field">
       <label for="commentaires">Commentaires du lien</label>
-      <textarea id="commentaires" [(ngModel)]="commentaires"></textarea>
+      <textarea id="commentaires" [(ngModel)]="ncComment"></textarea>
     </div>
 
     <div class="popup-buttons">
       <button (click)="saveLink()">Enregistrer</button>
       <button (click)="closePopup()">Annuler</button>
     </div>
+
   </div>
 </dx-popup>

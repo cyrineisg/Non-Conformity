@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,  ViewChild } from '@angular/core';
 import {DxPopupModule, DxDataGridModule} from 'devextreme-angular';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -7,13 +7,14 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
+import { LinksNonConformity } from 'src/app/models/links-non-conformity';
 
 @Component({
   selector: 'app-creation-non-conformity',
   templateUrl: './creation-non-conformity.component.html',
   styleUrls: ['./creation-non-conformity.component.scss'],
-    standalone: true,
-    imports: [DxPopupModule,CommonModule, IonicModule, FormsModule, DxDataGridModule],
+  standalone: true,
+  imports: [DxPopupModule,CommonModule, IonicModule, FormsModule, DxDataGridModule],
 })
 export class CreationNonConformityComponent  implements OnInit {
   // Variables liées à la popup
@@ -21,25 +22,26 @@ export class CreationNonConformityComponent  implements OnInit {
 
   // Données à afficher dans la popup
   typeLien: string = 'Déclenché(e)';
-  private _source: string = '';
+
+  ncSource: string = '';
+  ncComment: string = "";
+  ncLinks : LinksNonConformity[] = this.nonConformityService.non_conformity.nonConformityLinks;
+
   sourceOptions: string[] = [
     'Interne', 'Audit Interne', 'Audit Externe', 'Audit Certification',
-    'Objectives', 'Réclamations Clients', 'Contrôles Qualités',
-    'Conformité aux exigences', 'Indicateurs', 'Satisfactions Clients',
-    'Evaluation Qualité Service', 'Plainte des parties intéressées',
-    'Satisfaction des employés', 'Contrôles environnementaux', 'Contrôle Opérationnel',
-    'Simulation des situations d\'urgence', 'Contrôles SST', 'Accidents'
-  ];
+    'Réclamations Clients', 'Contrôles Qualités'];
+
   intitule: string = '';
+  nature: string = '';
   commentaires: string = '';
   // Tableau pour stocker les audits
   audits: any[] = [];
   qualityControls: any[] = [];
   displayedData: any[] = [];
   // Variable pour stocker l'enregistrement sélectionné
-  selectedRecord: any = null;
-
-  constructor(private route: ActivatedRoute, private router: Router, private nonConformityService: NonConformityService, private toastController: ToastController) { }
+  selectedRecord: any ;
+  selectRecordId: string ='';
+  constructor(private route: ActivatedRoute, private router: Router, public nonConformityService: NonConformityService, private toastController: ToastController) { }
 
   ngOnInit() {
   // Afficher la popup à l'initialisation
@@ -59,29 +61,80 @@ export class CreationNonConformityComponent  implements OnInit {
       await this.presentToast('Veuillez choisir un enregistrement avant d’enregistrer.');
       return;
     }
-    // Logique d'enregistrement ici (API, stockage local, etc.)
-    console.log('Données enregistrées:', {
-      typeLien: this.typeLien,
-      source: this.source,
-      intitule: this.intitule,
-      commentaires: this.commentaires
+    // Mettez à jour le champ commentaires pour le lien non-conformité
+    const linkToSave = new LinksNonConformity({
+      comments: this.ncComment, 
+      linkTypeStr: this.typeLien,
+      linkSourceStr: this.ncSource,
     });
 
-    // Définition des paramètres à passer
-    const queryParams: any = { source: this.source, date: new Date().toISOString() };
-
-    if (this.source !== 'Interne' && this.selectedRecord?.reference) {
-      queryParams.reference = this.selectedRecord.reference;
-      console.log("référence enregistrée");
+    if(this.ncSource){
+      //case audit
+      if(this.ncSource === "Audit Interne" || this.ncSource === "Audit Certification" || this.ncSource === "Audit externe" ){
+        linkToSave.auditId = this.selectRecordId; // Assign ID or null if undefined
+        // // Fetch Audit details
+        // if (this.selectRecordId) {
+        //   this.nonConformityService.getAuditById(this.selectRecordId).subscribe(
+        //     (auditData) => {
+        //       if (auditData) {
+        //         linkToSave.auditReference = auditData.auditReference;
+        //         linkToSave.auditDesignation = auditData.auditDesignation;
+        //         linkToSave.auditType = auditData.auditType;
+        //       }
+        //     },
+        //     (error) => {
+        //       console.error("Error fetching audit details:", error);
+        //     }
+        //   );
+        // }
+      }
+      //case quality controle
+      else if (this.ncSource === "Contrôles Qualités"){
+        linkToSave.controlId = this.selectRecordId; // Assign ID or null if undefined
+        // Fetch quality controle details
+        // if (this.selectRecordId) {
+        //   this.nonConformityService.getQCById(this.selectRecordId).subscribe(
+        //     (QCtData) => {
+        //       if (QCtData) {
+        //         linkToSave.controlReference = QCtData.controlReference;
+        //         linkToSave.controlProductReference = QCtData.controlProductReference;
+        //         linkToSave.controlProductDesignation = QCtData.controlProductDesignation;
+        //       }
+        //     },
+        //     (error) => {
+        //       console.error("Error fetching quality controle details:", error);
+        //     }
+        //   );
+        // }
+      }
+      //case customer complaint
+      else{
+        linkToSave.customerComplaintId = this.selectRecordId; // Assign ID or null if undefined
+        // Fetch customer complaint details
+        if (this.selectRecordId) {
+          // this.nonConformityService.getCCById(this.selectRecordId).subscribe(
+          //   (CCtData) => {
+          //     if (CCtData) {
+          //       linkToSave.customerComplaintReference = CCtData.customerComplaintReference;
+          //       linkToSave.customerComplaintDesignation = CCtData.customerComplaintDesignation;
+          //     }
+          //   },
+          //   (error) => {
+          //     console.error("Error fetching quality controle details:", error);
+          //   }
+          // );
+        }
+      }
     }
-    this.closePopup();
-    // Attendre un court instant pour éviter les conflits d'affichage
-    setTimeout(() => {
-      this.router.navigate(['/menu'], { queryParams });
-    }, 300); // Attente de 300ms (ajustable si nécessaire)
-    
+
+    // Ajouter ce lien à la liste des ncLinks (ou effectuez une opération d'ajout dans votre service)
+    this.ncLinks.push(linkToSave);  
+    this.nonConformityService.non_conformity.nonConformityLinks = [...this.ncLinks];
+    console.log("nc service data:", this.nonConformityService.non_conformity);  
+    this.router.navigate (['/details']); 
   }
 
+  /* charger les données relatives au tableau */
   //Charger les audits
   loadAudits() {
     this.displayedData = [];
@@ -89,6 +142,7 @@ export class CreationNonConformityComponent  implements OnInit {
       this.nonConformityService.getAudits().subscribe((data: any[]) => {
         // Filtrer les audits en fonction du type sélectionné
         this.displayedData = data.filter(audit => audit.auditNatureStr === this.source);
+        console.log("audit data:", this.displayedData);
       });
     } else {
       this.audits = [];
@@ -131,12 +185,14 @@ export class CreationNonConformityComponent  implements OnInit {
     }
   }
 
+
+
   //getter et setter pour la source
   get source(): string {
-    return this._source;
+    return this.ncSource;
   }
   set source(value: string) {
-    this._source = value;
+    this.ncSource = value;
     this.displayedData = [];
     switch (value) {
       case 'Contrôles Qualités':

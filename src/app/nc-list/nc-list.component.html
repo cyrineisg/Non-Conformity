@@ -22,11 +22,11 @@
 
     <!-- Boutons "Réelle" et "Potentielle" avec icône "plus" -->
     <div class="buttons-container">
-      <ion-button class="reelle-button" (click)="goToCreationNonConformity('reelle')">
+      <ion-button class="reelle-button" (click)="goToCreationNonConformity('Réel(lle)')">
         <ion-icon slot="start" name="add"></ion-icon>
         Réelle
       </ion-button>
-      <ion-button class="potentielle-button" (click)="goToCreationNonConformity('potentielle')">
+      <ion-button class="potentielle-button" (click)="goToCreationNonConformity('Potentiel(lle)')">
         <ion-icon slot="start" name="add"></ion-icon>
         Potentielle
       </ion-button>
@@ -75,7 +75,7 @@
               </div> <!-- Messagerie -->
               <ion-icon name="construct-outline" class="action-icon"></ion-icon>  <!-- Actions de correction -->
               <ion-icon name="search-circle-outline" class="action-icon"></ion-icon>  <!-- Analyse de causes -->
-              <ion-icon name="eye-outline" class="action-icon"></ion-icon>  <!-- Visualisation -->
+              <ion-icon name="eye-outline" class="action-icon" (Click)="openNcDetails(NonConformity)"></ion-icon>  <!-- Visualisation -->
             </div>            
           </ion-card-content>
         </div>
@@ -97,3 +97,32 @@
 </ion-content>
 
 
+
+<!-- Modal for Viewing NonConformity Details -->
+<ion-modal [isOpen]="isViewModalOpen" (ionModalDidDismiss)="isViewModalOpen = false">
+  <ng-template>
+    <div class="modal-content">
+      <h2>Détails de l'Action {{ selectedNc?.reference }}</h2>
+      <p><strong>Désignation :</strong> {{ selectedNc?.designation }}</p>
+      <p><strong>Description :</strong> {{ selectedNc?.description }}</p>
+      <p><strong>Non conformity status :</strong> {{ selectedNc?.stateStr }}</p>
+      <p><strong>Processus:</strong> {{ selectedNc?.processDesignation }}</p>
+
+      <ul *ngFor="let ncCorrection of nonConformityService.non_conformity.nonConformityCorrections">
+        <li> {{ ncCorrection?.designation }}</li>
+      </ul>
+      
+      <ul *ngFor="let ncAnalysis of nonConformityService.non_conformity.nonConformityAnalysis">
+        <li> {{ ncAnalysis?.causeDesignation }}</li>
+      </ul>
+      
+      <p><strong>Teams Supervisor :</strong> {{ selectedNc?.teamsSupervisor }}</p>
+      <p><strong>Teams Detector :</strong> {{ selectedNc?.teamsDetector }}</p>
+      <p><strong>Teams Responsable Analysis :</strong> {{ selectedNc?.teamsRespAnalysis }}</p>
+      <p><strong>Teams Responsable Correction :</strong> {{ selectedNc?.teamsRespCorrection }}</p>
+      <p><strong>Teams Is Informed :</strong> {{ selectedNc?.teamsIsInformed }}</p>
+      
+      <ion-button (click)="isViewModalOpen = false">Fermer</ion-button>
+    </div>
+  </ng-template>
+</ion-modal>
